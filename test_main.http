@@ -1,0 +1,14 @@
+POST http://127.0.0.1:8000/predict
+Content-Type: application/json
+
+{
+  "symptoms": ["itching", "watering_from_eyes", "chest_pain"]
+}
+
+###
+POST http://127.0.0.1:8000/search-symptom
+Content-Type: application/json
+
+{
+  "query": "голова"
+}
