@@ -33,6 +33,11 @@ DIAGNOSE_MODEL = load_model('hahatonV2.h5')
 with open('disease_labels.json', 'r') as json_file:
     DISEASE_LABELS = json.load(json_file)
 
+DISEASE_TRANSLATIONS = {}
+with open('diseases_translations.json', 'r', encoding='utf-8') as json_file:
+    for disease_ru, disease_en in json.load(json_file).items():
+        DISEASE_TRANSLATIONS[disease_en] = disease_ru
+
 with open('symptom_index_dict.json', 'r') as json_file:
     SYMPTOM_INDEX_DICT = json.load(json_file)
 
@@ -46,7 +51,10 @@ def predict(symptom_list: SymptomList):
 
     result = predict_diseases(symptoms, DIAGNOSE_MODEL, SYMPTOM_INDEX_DICT, DISEASE_LABELS)
 
-    return [{'disease': disease, 'probability': round(probability * 100, 1)} for disease, probability in result]
+    return [
+        {'disease': DISEASE_TRANSLATIONS.get(disease), 'probability': round(probability * 100, 1)}
+        for disease, probability in result
+    ]
 
 
 @app.post('/search-symptom')
