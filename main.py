@@ -2,6 +2,7 @@ import json
 
 from fastapi import FastAPI
 from Levenshtein import setratio
+from starlette.middleware.cors import CORSMiddleware
 from tensorflow.keras.models import load_model
 
 from models import (
@@ -11,6 +12,13 @@ from models import (
 from predict_utils import predict_diseases
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 with open('symptoms_dictionary.json', 'r', encoding='utf-8') as symptoms_file:
     SYMPTOMS = json.load(symptoms_file)
@@ -20,7 +28,7 @@ for category, category_data in SYMPTOMS.items():
     for symptom_ru, symptom_en in category_data.items():
         FLAT_SYMPTOMS[symptom_ru] = symptom_en
 
-DIAGNOSE_MODEL = load_model('hahaton.h5')
+DIAGNOSE_MODEL = load_model('hahatonV2.h5')
 
 with open('disease_labels.json', 'r') as json_file:
     DISEASE_LABELS = json.load(json_file)
